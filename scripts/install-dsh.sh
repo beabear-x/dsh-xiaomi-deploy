@@ -6,7 +6,7 @@ set -eu
 BASE="${DSH_MINIS_DIR:-/var/minis/shared/deepseek-harness}"
 RUNTIME="$BASE/runtime"
 BUILD="$BASE/build-node-pty"
-VERSION="${DSH_VERSION:-0.1.0-rc.6}"
+VERSION="${DSH_VERSION:-0.1.0-rc.8}"
 
 for cmd in node npm cc c++ make python3; do
   if ! command -v "$cmd" >/dev/null 2>&1; then

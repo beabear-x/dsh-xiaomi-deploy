@@ -69,7 +69,7 @@ sh scripts/install-dsh.sh
 
 脚本会：
 
-- 安装官方 `@deepseek-ai/dsh@0.1.0-rc.6`；
+- 安装官方 `@deepseek-ai/dsh@0.1.0-rc.8`；
 - 下载相同版本的 `node-pty` 源码；
 - 通过 `npm_config_enable_lto=false` 关闭 LTO 后本地构建；
 - 将 ARM64 `pty.node` 写入 DSH 实际查找的位置；
@@ -90,7 +90,7 @@ sh scripts/install-dsh.sh
 可在执行前指定其他 DSH 版本或数据目录：
 
 ```sh
-DSH_VERSION=0.1.0-rc.6 sh scripts/install-dsh.sh
+DSH_VERSION=0.1.0-rc.8 sh scripts/install-dsh.sh
 DSH_MINIS_DIR=/var/minis/shared/my-dsh sh scripts/install-dsh.sh
 ```
 
@@ -170,7 +170,7 @@ npm_config_enable_lto=false ./node_modules/.bin/node-gyp rebuild
 
 ### 3. DSH 运行时需要 `--expose-internals`
 
-DSH `0.1.0-rc.6` 会挂载配置监视/HMR 能力。在 Node 22 中普通的：
+DSH `0.1.0-rc.8` 会挂载配置监视/HMR 能力。在 Node 22 中普通的：
 
 ```sh
 dsh web
@@ -201,7 +201,7 @@ BASE=/var/minis/shared/deepseek-harness
 mkdir -p "$BASE/runtime"
 cd "$BASE/runtime"
 printf '{"name":"dsh-minis-runtime","private":true}\n' > package.json
-npm install --omit=dev @deepseek-ai/dsh@0.1.0-rc.6
+npm install --omit=dev @deepseek-ai/dsh@0.1.0-rc.8
 ```
 
 ### 关闭 LTO 编译 `node-pty`
@@ -262,6 +262,7 @@ HTTP/1.1 200 OK
 | 表现 | 原因与处理 |
 |---|---|
 | `Failed to load native module: pty.node` | 没有部署 ARM64 `node-pty`。重新执行 `sh scripts/install-dsh.sh`。 |
+| 已安装最新版，仍提示 `Failed to load native module: pty.node` | DSH 会把 `node-pty` 升级到新版本（如 `1.2.0-beta.15`），其自带的 `prebuilds/linux-arm64/pty.node` 可能无法加载（ABI 不匹配）。请用 `sh scripts/install-dsh.sh` 针对该版本重新构建 ARM64 `pty.node`。 |
 | `lto-wrapper` / `recipe commences before first target` | `node-pty` 自动构建启用了 LTO。请使用脚本或以 `npm_config_enable_lto=false` 手动重建。 |
 | URL 打印后进程退出，日志含 `--expose-internals is required` | 使用 `sh scripts/start-dsh-web.sh`，不要直接使用 `dsh web`。 |
 | 系统浏览器显示无法连接 | 服务尚未启动、已被 Android 回收或端口被占用。检查 `/var/minis/shared/deepseek-harness/dsh-web.log` 后重启。 |
@@ -284,9 +285,9 @@ HTTP/1.1 200 OK
 | 手机 CPU ABI | `arm64-v8a` |
 | Minis Linux | Alpine Linux 3.21 / `aarch64` / musl |
 | Node.js | 22.23.2 |
-| DSH npm 包 | `@deepseek-ai/dsh@0.1.0-rc.6` |
+| DSH npm 包 | `@deepseek-ai/dsh@0.1.0-rc.8` |
 | 服务地址 | `http://127.0.0.1:3080/` |
-| 原生修复 | `node-pty@1.1.0`，以禁用 LTO 的方式构建 ARM64 `pty.node` |
+| 原生修复 | `node-pty@1.2.0-beta.15`，以禁用 LTO 的方式构建 ARM64 `pty.node` |
 
 ---
 
